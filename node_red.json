@@ -1,0 +1,436 @@
+[
+    {
+        "id": "d9c669a4.983c98",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "87aa816d.aa883",
+        "type": "ui_form",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "label": "",
+        "group": "7022ae8a.42308",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Enter Name",
+                "value": "name",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Enter E-mail",
+                "value": "email",
+                "type": "email",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Enter Password",
+                "value": "password",
+                "type": "password",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "name": "",
+            "email": "",
+            "password": ""
+        },
+        "payload": "",
+        "submit": "Create",
+        "cancel": "cancel",
+        "topic": "",
+        "x": 130,
+        "y": 80,
+        "wires": [
+            [
+                "9969ecf.7fbf81",
+                "fcdcf4c0.d3cc28"
+            ]
+        ]
+    },
+    {
+        "id": "9969ecf.7fbf81",
+        "type": "debug",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 310,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "fcdcf4c0.d3cc28",
+        "type": "function",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "func": "msg.payload={\n    _id:msg.payload.email,\n    Name:msg.payload.name,\n    Emailid:msg.payload.email,\n    Password:msg.payload.password,\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 340,
+        "y": 40,
+        "wires": [
+            [
+                "fa5a2abd.2d4718"
+            ]
+        ]
+    },
+    {
+        "id": "fa5a2abd.2d4718",
+        "type": "cloudant out",
+        "z": "d9c669a4.983c98",
+        "name": "cloudant",
+        "cloudant": "",
+        "database": "sample",
+        "service": "node-red-lfqfe-2020--cloudant-1597403156370-40963",
+        "payonly": true,
+        "operation": "insert",
+        "x": 540,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "d39f48c2.f0c308",
+        "type": "ui_form",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "label": "",
+        "group": "37bb51a2.7d429e",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "Enter Email",
+                "value": "email",
+                "type": "email",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "Enter Password",
+                "value": "password",
+                "type": "password",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "email": "",
+            "password": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "",
+        "x": 110,
+        "y": 240,
+        "wires": [
+            [
+                "26187b1d.843d74"
+            ]
+        ]
+    },
+    {
+        "id": "26187b1d.843d74",
+        "type": "function",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "func": "global.set('emailid',msg.payload.email);\nglobal.set('password',msg.payload.password);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 280,
+        "y": 240,
+        "wires": [
+            [
+                "c9338e6b.baff8"
+            ]
+        ]
+    },
+    {
+        "id": "c9338e6b.baff8",
+        "type": "function",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "func": "var emailid=global.get(\"emailid\");\nmsg.payload=\"emailid:\"+emailid;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 480,
+        "y": 240,
+        "wires": [
+            [
+                "d4c272ac.bf677"
+            ]
+        ]
+    },
+    {
+        "id": "d4c272ac.bf677",
+        "type": "cloudant in",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "cloudant": "",
+        "database": "sample",
+        "service": "node-red-lfqfe-2020--cloudant-1597403156370-40963",
+        "search": "_idx_",
+        "design": "user",
+        "index": "user",
+        "x": 700,
+        "y": 240,
+        "wires": [
+            [
+                "3b44fbfe.061464"
+            ]
+        ]
+    },
+    {
+        "id": "3b44fbfe.061464",
+        "type": "function",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "func": "if(msg.payload[0].password===global.get('password')){\n    msg.payload='Login successful';\n}\nelse{\n    msg.payload='Login unsuccessful';\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 760,
+        "y": 300,
+        "wires": [
+            [
+                "355776db.35ae2a"
+            ]
+        ]
+    },
+    {
+        "id": "355776db.35ae2a",
+        "type": "ui_text",
+        "z": "d9c669a4.983c98",
+        "group": "37bb51a2.7d429e",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "name": "",
+        "label": "text",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 570,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "5eac1da7.803944",
+        "type": "ui_form",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "label": "",
+        "group": "8a97910e.79fa5",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "user input",
+                "value": "input",
+                "type": "text",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "input": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "",
+        "x": 80,
+        "y": 420,
+        "wires": [
+            [
+                "d18e4afe.702f38"
+            ]
+        ]
+    },
+    {
+        "id": "d18e4afe.702f38",
+        "type": "function",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "func": " msg.payload = msg.payload.input;\n \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 280,
+        "y": 420,
+        "wires": [
+            [
+                "ea9bc538.1b91d8"
+            ]
+        ]
+    },
+    {
+        "id": "ea9bc538.1b91d8",
+        "type": "watson-conversation-v1",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "workspaceid": "a9478134-c2e0-45aa-834f-311be954b0e3",
+        "multiuser": false,
+        "context": true,
+        "empty-payload": false,
+        "service-endpoint": "https://api.eu-gb.assistant.watson.cloud.ibm.com/instances/12233303-dd0b-472d-b17b-da6856f9df32",
+        "timeout": "",
+        "optout-learning": false,
+        "x": 480,
+        "y": 420,
+        "wires": [
+            [
+                "6f76d31e.eab0bc",
+                "9049c158.51899"
+            ]
+        ]
+    },
+    {
+        "id": "6f76d31e.eab0bc",
+        "type": "debug",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 550,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "9049c158.51899",
+        "type": "function",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "func": "msg.payload=msg.payload.output.generic[0].text;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 680,
+        "y": 420,
+        "wires": [
+            [
+                "35877a5a.95e5d6",
+                "b349e33a.f3e9b"
+            ]
+        ]
+    },
+    {
+        "id": "35877a5a.95e5d6",
+        "type": "ui_text",
+        "z": "d9c669a4.983c98",
+        "group": "8a97910e.79fa5",
+        "order": 1,
+        "width": "6",
+        "height": "6",
+        "name": "",
+        "label": "Bot response",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 790,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "b349e33a.f3e9b",
+        "type": "ui_audio",
+        "z": "d9c669a4.983c98",
+        "name": "",
+        "group": "8a97910e.79fa5",
+        "voice": "",
+        "always": "",
+        "x": 910,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "7022ae8a.42308",
+        "type": "ui_group",
+        "z": "",
+        "name": "Reg form",
+        "tab": "a543407f.8ca69",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "37bb51a2.7d429e",
+        "type": "ui_group",
+        "z": "",
+        "name": "Login Form",
+        "tab": "8df9e7d7.32fdf8",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "8a97910e.79fa5",
+        "type": "ui_group",
+        "z": "",
+        "name": "Bot",
+        "tab": "37097d3f.35d382",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "a543407f.8ca69",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Registration page",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "8df9e7d7.32fdf8",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Login Page",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "37097d3f.35d382",
+        "type": "ui_tab",
+        "z": "",
+        "name": "customerHelp",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
